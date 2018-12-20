@@ -1,0 +1,7 @@
+#!/bin/sh -e
+
+vendor/bin/phpstan analyse --level=max src/ tests/
+
+bin/phpunit
+
+php php-cs-fixer.phar fix --allow-risky=yes --dry-run

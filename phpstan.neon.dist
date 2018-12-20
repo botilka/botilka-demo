@@ -1,0 +1,7 @@
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+    - vendor/phpstan/phpstan-phpunit/rules.neon
+
+parameters:
+    autoload_files:
+        - %currentWorkingDirectory%/bin/.phpunit/phpunit-6.5/vendor/autoload.php
