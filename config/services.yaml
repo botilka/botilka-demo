@@ -7,3 +7,21 @@ services:
     App\:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php}'
+
+    app.repository.bank_account:
+        class: 'Botilka\Repository\DefaultEventSourcedRepository'
+        arguments:
+            $aggregateRootClassName: 'App\BankAccount\Domain\BankAccount'
+
+    app.repository.bank_account.snapshot:
+        decorates: 'app.repository.bank_account'
+        class: 'Botilka\Snapshot\SnapshotedEventSourcedRepository'
+
+    Botilka\Repository\EventSourcedRepositoryRegistry:
+        arguments:
+            $repositories:
+                App\BankAccount\Domain\BankAccount: '@app.repository.bank_account'
+
+    App\BankAccount\Infrastructure\Repository\BankAccountEventStoreRepository:
+        arguments:
+            $repository: '@app.repository.bank_account'

@@ -1,46 +1,44 @@
-FROM php:7.2-fpm-stretch
+ARG PHP_VERSION=7.2
+FROM php:${PHP_VERSION}-fpm AS app-php_base
 
-# Install Git
+LABEL maintener="9268494+azzra@users.noreply.github.com"
+
+ARG APCU_VERSION=5.1.18
+
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         git \
-	    ssh \
+        ssh \
+        libzip-dev \
+        zip \
+        libpq-dev \
     && rm -Rf /var/lib/apt/lists/*
-
-# PHP config
-ADD docker/php/php.ini /usr/local/etc/php/php.ini
 
 RUN pecl install apcu mongodb xdebug \
     && docker-php-ext-enable apcu mongodb xdebug \
     && rm -rf /tmp/pear
 
 RUN docker-php-ext-configure opcache --enable-opcache \
-    && docker-php-ext-install opcache
-
-ARG BUILD_DEPS="libicu-dev libfreetype6-dev libjpeg62-turbo-dev zlib1g-dev"
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        $BUILD_DEPS \
-        libfreetype6 \
-        libicu57 \
-        libjpeg62-turbo \
-        libpq-dev \
-        zlib1g \
-    && rm -rf /var/lib/apt/lists/* \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-configure zip --with-libzip \
     && docker-php-ext-install -j$(nproc) \
-        intl \
-        mbstring \
-        pdo_pgsql \
-        gd \
+        opcache \
         zip \
-    && apt-get purge -y --auto-remove $BUILD_DEPS
+        mbstring \
+        pdo_pgsql
 
 # Composer
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER 1
+ENV COMPOSER_MEMORY_LIMIT -1
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 ENV PATH="${PATH}:/root/.composer/vendor/bin"
+
+FROM app-php_base AS app-php_dev
+RUN ln -s $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
+COPY docker/php/conf.d/app.dev.ini $PHP_INI_DIR/conf.d/app.ini
+
+FROM app-php_base AS app-php_prod
+ARG APP_ENV=prod
 
 COPY composer.json composer.lock symfony.lock ./
 RUN set -eux; \
@@ -62,6 +60,3 @@ RUN set -eux; \
 
 COPY docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
-
-ENTRYPOINT ["docker-entrypoint"]
-CMD ["php-fpm"]

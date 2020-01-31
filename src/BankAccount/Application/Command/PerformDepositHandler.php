@@ -19,7 +19,7 @@ final class PerformDepositHandler implements CommandHandler
         $this->repository = $repository;
     }
 
-    public function __invoke(PerformDepositCommand $command): CommandResponse
+    public function __invoke(PerformDepositCommand $command): EventSourcedCommandResponse
     {
         $bankAccount = $this->repository->get($command->getAccountId());
         /** @var BankAccount $instance */

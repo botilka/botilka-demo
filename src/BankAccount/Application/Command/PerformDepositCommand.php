@@ -17,7 +17,7 @@ final class PerformDepositCommand implements Command
     private $amount;
     private $reason;
 
-    public function __construct(string $accountId, float $amount, ?string $reason)
+    public function __construct(string $accountId, int $amount, ?string $reason)
     {
         $this->accountId = $accountId;
         $this->amount = $amount;
@@ -29,7 +29,7 @@ final class PerformDepositCommand implements Command
         return $this->accountId;
     }
 
-    public function getAmount(): float
+    public function getAmount(): int
     {
         return $this->amount;
     }

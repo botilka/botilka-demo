@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 final class FindBankAccountByCurrencyQuery implements Query
 {
     /**
-     * @Assert\Length(min=2, max=4)
+     * @Assert\Length(min=3, max=3)
      */
     private $currency;
 

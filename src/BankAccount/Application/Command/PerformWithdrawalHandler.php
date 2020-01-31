@@ -19,7 +19,7 @@ final class PerformWithdrawalHandler implements CommandHandler
         $this->repository = $repository;
     }
 
-    public function __invoke(PerformWithdrawalCommand $command): CommandResponse
+    public function __invoke(PerformWithdrawalCommand $command): EventSourcedCommandResponse
     {
         $bankAccount = $this->repository->get($command->getAccountId());
         /** @var BankAccount $instance */

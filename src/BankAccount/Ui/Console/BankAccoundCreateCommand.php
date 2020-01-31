@@ -43,6 +43,12 @@ class BankAccoundCreateCommand extends Command
         /** @var CreateBankAccountCommand $command */
         foreach ($commands as $command) {
             $commandResponse = $this->commandBus->dispatch($command);
+
+            if (null === $commandResponse) {
+                dump('got null, async handling');
+                continue;
+            }
+
             dump(\sprintf('%s: %s', $command->getCurrency(), $commandResponse->getId()));
         }
     }

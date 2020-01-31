@@ -7,25 +7,21 @@ namespace App\BankAccount\Infrastructure\Repository;
 use App\BankAccount\Domain\BankAccount;
 use App\BankAccount\Domain\BankAccountRepository;
 use Botilka\EventStore\EventStore;
+use Botilka\Repository\EventSourcedRepository;
 
 final class BankAccountEventStoreRepository implements BankAccountRepository
 {
-    private $eventStore;
+    private $repository;
 
-    public function __construct(EventStore $eventStore)
+    public function __construct(EventSourcedRepository $repository)
     {
-        $this->eventStore = $eventStore;
+        $this->repository = $repository;
     }
 
     public function get(string $id): BankAccount
     {
-        $events = $this->eventStore->load($id);
-        $instance = new BankAccount();
-
-        foreach ($events as $event) {
-            /** @var BankAccount $instance */
-            $instance = $instance->apply($event);
-        }
+        /** @var BankAccount $instance */
+        $instance = $this->repository->load($id);
 
         return $instance;
     }

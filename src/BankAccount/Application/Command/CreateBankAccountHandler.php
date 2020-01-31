@@ -20,7 +20,7 @@ final class CreateBankAccountHandler implements CommandHandler
         $this->repository = $repository;
     }
 
-    public function __invoke(CreateBankAccountCommand $command): CommandResponse
+    public function __invoke(CreateBankAccountCommand $command): EventSourcedCommandResponse
     {
         $id = Uuid::uuid4();
         /** @var BankAccount $instance */

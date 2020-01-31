@@ -1,9 +1,3 @@
 botilka:
     event_store: 'Botilka\Infrastructure\Doctrine\EventStoreDoctrine'
 #    event_store: 'Botilka\Infrastructure\MongoDB\EventStoreMongoDB'
-#
-#    default_messenger_config: true
-#    doctrine_transaction_middleware: true
-#    api_platform:
-#        expose_cq: true
-#        expose_event_store: true

@@ -1,17 +1,14 @@
-#framework:
-#    messenger:
-#        transports:
-#            # Uncomment the following line to enable a transport named "amqp"
-#            # amqp: '%env(MESSENGER_TRANSPORT_DSN)%'
-#
-#        routing:
-#            # Route your messages to the transports
-#            # 'App\Message\YourMessage': amqp
-#
-#        default_bus: messenger.bus.commands
-#        buses:
-#            messenger.bus.commands:
-#                middleware:
-#                    - Botilka\Infrastructure\Symfony\Messenger\Middleware\EventDispatcherBusMiddleware
-#            messenger.bus.events: ~
-#            messenger.bus.queries: ~
+framework:
+    messenger:
+        # Uncomment this (and the failed transport below) to send failed messages to this transport for later handling.
+        # failure_transport: failed
+
+        transports:
+            # https://symfony.com/doc/current/messenger.html#transports
+            async: '%env(MESSENGER_TRANSPORT_DSN)%'
+            # failed: 'doctrine://default?queue_name=failed'
+            # sync: 'sync://'
+
+        routing:
+            # Route your messages to the transports
+            Botilka\Application\Command\Command: async
