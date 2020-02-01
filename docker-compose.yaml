@@ -11,6 +11,7 @@ services:
             - elasticsearch
         volumes:
             - ./:/var/www/html
+            - ~/.composer/cache:/root/.composer/cache
 
     nginx:
         image: nginx:1-alpine

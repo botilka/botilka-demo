@@ -11,6 +11,7 @@ RUN apt-get update \
         ssh \
         libzip-dev \
         zip \
+        unzip \
         libpq-dev \
     && rm -Rf /var/lib/apt/lists/*
 
